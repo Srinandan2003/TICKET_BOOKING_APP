@@ -122,7 +122,7 @@ return res.json({
         seatDoc = await Seat.create({});
       }
   
-      // Build the correct seat layout: 11 rows of 7, 1 row of 3
+      // Define the correct seat layout: 11 rows of 7, 1 row of 3
       const totalSeats = 80;
       const seatsPerRow = 7;
       const fullRows = Math.floor(totalSeats / seatsPerRow); // 11
@@ -130,12 +130,20 @@ return res.json({
   
       const layout = [];
   
+      // Create 11 rows of 7 seats
       for (let i = 0; i < fullRows; i++) {
         layout.push(Array(seatsPerRow).fill(0));
       }
   
+      // Add 1 row of 3 seats
       if (remainder > 0) {
-        layout.push(Array(remainder).fill(0)); // last row with 3 seats
+        layout.push(Array(remainder).fill(0));
+      }
+  
+      // Validate total seats
+      const calculatedTotal = layout.reduce((sum, row) => sum + row.length, 0);
+      if (calculatedTotal !== totalSeats) {
+        throw new Error(`Invalid seat count: expected ${totalSeats}, got ${calculatedTotal}`);
       }
   
       seatDoc.seats = layout;
