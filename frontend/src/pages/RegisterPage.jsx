@@ -6,9 +6,6 @@ const RegisterPage = () => {
       {/* Intro Section */}
       <div className="w-full bg-blue-600 text-white p-6 text-center shadow-md">
         <h1 className="text-3xl font-bold mb-2">Join Ticket Booking</h1>
-        <p className="text-sm max-w-md mx-auto">
-          Sign up to start booking seats for your favorite events! Enjoy a seamless and secure experience with real-time updates.
-        </p>
       </div>
 
       {/* Register Form Section */}
