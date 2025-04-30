@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, CheckCircle, Chair, Film, RotateCw, AlertCircle } from 'lucide-react';
+import { LogOut, CheckCircle, Chair, Film, RotateCw } from 'lucide-react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance from '../api/axiosInstance.js';
@@ -30,6 +30,7 @@ const SeatBooking = () => {
       setLoading(false);
       setError(null);
     } catch (error: any) {
+      toast.error('Error fetching seats: ' + (error.response?.data?.message || error.message));
       setError(error.response?.data?.message || error.message || 'An unexpected error occurred');
       setLoading(false);
     }
@@ -51,15 +52,12 @@ const SeatBooking = () => {
           }
         }
       );
-      if (response.data.message) {
-        toast.success(response.data.message);
-      }
+      toast.success(response.data.message);
       setSeatMap(response.data.fullSeats);
       setError(null);
     } catch (error: any) {
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to book seats.';
-        setError(errorMessage);
-        toast.error(errorMessage);
+      toast.error('Error booking seats: ' + (error.response?.data?.message || error.message));
+      setError(error.response?.data?.message || error.message || 'Failed to book seats.');
     }
   };
 
@@ -85,9 +83,8 @@ const SeatBooking = () => {
       fetchSeatStatus();
       setError(null);
     } catch (error: any) {
-        const errorMessage = error.response?.data?.message || error.message || 'Failed to reset bookings.';
-        setError(errorMessage);
-        toast.error(errorMessage);
+      toast.error('Error resetting seats: ' + (error.response?.data?.message || error.message));
+      setError(error.response?.data?.message || error.message || 'Failed to reset bookings.');
     }
   };
 
@@ -112,9 +109,9 @@ const SeatBooking = () => {
     }
   };
 
-    const getSeatClassNames = (...classes: string[]) => {
-        return classes.filter(Boolean).join(' ');
-    };
+  const getSeatClassNames = (...classes: string[]) => {
+    return classes.filter(Boolean).join(' ');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col">
@@ -166,27 +163,20 @@ const SeatBooking = () => {
               value={numberOfSeats}
               onChange={handleInputChange}
               placeholder="Enter number of seats (1-7)"
-              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-lg"
+              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 text-lg"
             />
           </div>
           <button
             onClick={handleBooking}
             disabled={numberOfSeats < 1 || numberOfSeats > 7 || loading}
-            className={getSeatClassNames(
-                "w-full max-w-sm bg-blue-600 text-white p-3 rounded-lg shadow-md hover:bg-blue-700",
-                "disabled:bg-gray-400 transition-all duration-300 transform hover:scale-105",
-                "text-lg flex items-center justify-center gap-2"
-            )}
+            className="w-full max-w-sm bg-blue-600 text-white p-3 rounded-lg shadow-md hover:bg-blue-700 disabled:bg-gray-400 transition-all duration-300 transform hover:scale-105 text-lg flex items-center justify-center gap-2"
           >
             <CheckCircle className="w-5 h-5" />
             Book Now
           </button>
           <button
             onClick={handleReset}
-            className={getSeatClassNames(
-                "w-full max-w-sm mt-4 bg-gray-600 text-white p-3 rounded-lg shadow-md hover:bg-gray-700",
-                "transition-all duration-300 transform hover:scale-105 text-lg flex items-center justify-center gap-2"
-            )}
+            className="w-full max-w-sm mt-4 bg-gray-600 text-white p-3 rounded-lg shadow-md hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 text-lg flex items-center justify-center gap-2"
           >
             <RotateCw className="w-5 h-5" />
             Reset Booking
@@ -194,59 +184,59 @@ const SeatBooking = () => {
         </div>
       </div>
       {error && (
-          <div className="absolute bottom-4 left-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <AlertCircle className="h-4 w-4 mr-2 inline-block" />
-            <strong className="font-bold">Error: </strong>
-            <span className="block sm:inline">{error}</span>
-          </div>
-        )}
+        <div className="absolute bottom-4 left-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <AlertCircle className="h-4 w-4 mr-2 inline-block" />
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
     </div>
   );
 };
 
 const SeatMap = ({ seats }: { seats: number[][] }) => {
-    let seatNumber = 1;
-    const bookedCount = seats.flat().filter(seat => seat === 1).length;
-    const availableCount = seats.flat().length - bookedCount;
+  let seatNumber = 1;
+  const bookedCount = seats.flat().filter(seat => seat === 1).length;
+  const availableCount = seats.flat().length - bookedCount;
 
-    const getSeatClassNames = (...classes: string[]) => {
-        return classes.filter(Boolean).join(' ');
-    };
+  const getSeatClassNames = (...classes: string[]) => {
+    return classes.filter(Boolean).join(' ');
+  };
 
-    return (
-        <div className="flex flex-col h-full">
-            <div className="grid grid-cols-7 gap-4 flex-1 overflow-auto p-4">
-                {seats.map((row, rowIndex) =>
-                    row.map((seat, colIndex) => {
-                        let additionalClasses = "";
-                        if (rowIndex === 11) {
-                            additionalClasses = "col-span-2";
-                        }
-                        return (
-                            <div
-                                key={`${rowIndex}-${colIndex}`}
-                                className={getSeatClassNames(
-                                    "w-16 h-16 rounded-lg flex items-center justify-center text-white font-semibold shadow-md transition-all duration-300 transform hover:scale-110",
-                                    seat === 0 ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600',
-                                    additionalClasses
-                                )}
-                            >
-                                <span className="text-lg">{seatNumber++}</span>
-                            </div>
-                        );
-                    })
+  return (
+    <div className="flex flex-col h-full">
+      <div className="grid grid-cols-7 gap-4 flex-1 overflow-auto p-4">
+        {seats.map((row, rowIndex) =>
+          row.map((seat, colIndex) => {
+            let additionalClasses = "";
+            if (rowIndex === 11) {
+              additionalClasses = "col-span-2";
+            }
+            return (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={getSeatClassNames(
+                  "w-16 h-16 rounded-lg flex items-center justify-center text-white font-semibold shadow-md transition-all duration-300 transform hover:scale-110",
+                  seat === 0 ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600',
+                  additionalClasses
                 )}
-            </div>
-            <div className="mt-6 flex justify-center space-x-8">
-                <div className="inline-flex items-center px-6 py-3 rounded-full bg-yellow-500 text-white shadow-md text-lg">
-                    Booked: {bookedCount}
-                </div>
-                <div className="inline-flex items-center px-6 py-3 rounded-full bg-green-500 text-white shadow-md text-lg">
-                    Available: {availableCount}
-                </div>
-            </div>
+              >
+                <span className="text-lg">{seatNumber++}</span>
+              </div>
+            );
+          })
+        )}
+      </div>
+      <div className="mt-6 flex justify-center space-x-8">
+        <div className="inline-flex items-center px-6 py-3 rounded-full bg-yellow-500 text-white shadow-md text-lg">
+          Booked: {bookedCount}
         </div>
-    );
+        <div className="inline-flex items-center px-6 py-3 rounded-full bg-green-500 text-white shadow-md text-lg">
+          Available: {availableCount}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SeatBooking;
