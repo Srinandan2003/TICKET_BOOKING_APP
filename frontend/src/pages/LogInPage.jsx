@@ -10,9 +10,9 @@ function LogIn() {
       </div>
 
       {/* Login Form Section */}
-      <div className="flex-1 flex items-center justify-center w-full p-4">
+    
         <Login />
-      </div>
+   
     </div>
   );
 }
