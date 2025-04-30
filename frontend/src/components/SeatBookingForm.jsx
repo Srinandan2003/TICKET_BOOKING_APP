@@ -81,12 +81,13 @@ const SeatBooking = () => {
           {loading ? <p className="text-center text-gray-500 text-base">Loading...</p> : <SeatMap seats={seatMap} />}
         </div>
         <div className="w-1/3 h-full p-2 flex flex-col bg-white">
-          <h2 className="text-xl font-semibold mb-2 text-gray-800">Booking Info</h2>
-          <div className="space-y-1 mb-2">
-            <p className="text-sm text-gray-700">Available: {seatMap.length ? seatMap.flat().length - seatMap.flat().filter(seat => seat === 1).length : 0}</p>
-            <p className="text-sm text-gray-700">Max Selection: 7</p>
-            <div>
-              <p className="text-sm text-gray-700">Booked:</p>
+          <h2 className="text-lg font-semibold mb-2 border-b pb-1">Booking Information</h2>
+          <div className="space-y-1 mb-4">
+            <p className="text-sm text-gray-700">Available Seats: {seatMap.length ? seatMap.flat().length - seatMap.flat().filter(seat => seat === 1).length : 0}</p>
+            <p className="text-sm text-gray-700">Booked Seats: {seatMap.length ? seatMap.flat().filter(seat => seat === 1).length : 0}</p>
+            <p className="text-sm text-gray-700">Max Seats Selection: 7</p>
+            <div className="mt-2 bg-gray-100 p-2 rounded">
+              <p className="text-sm text-gray-700">Your Booked Seats:</p>
               <div className="flex flex-wrap gap-1 mt-1">
                 {bookedSeats.length > 0 ? bookedSeats.map(seat => (
                   <span key={seat} className="px-2 py-1 rounded-full bg-orange-500 text-white text-xs">{seat}</span>
@@ -100,21 +101,21 @@ const SeatBooking = () => {
             max="7"
             value={numberOfSeats}
             onChange={handleInputChange}
-            placeholder="Seats"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            placeholder="Enter number of seats"
+            className="w-full p-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
           />
           <button
             onClick={handleBooking}
             disabled={numberOfSeats < 1 || numberOfSeats > 7 || loading}
-            className="w-full mt-2 bg-blue-600 text-white p-2 rounded shadow-md hover:bg-blue-700 disabled:bg-gray-400 transition-all duration-200 text-sm"
+            className="w-full bg-blue-600 text-white p-2 rounded shadow-md hover:bg-blue-700 disabled:bg-gray-400 transition-all duration-200 text-sm mb-2"
           >
-            Book
+            Book Seats
           </button>
           <button
             onClick={handleReset}
-            className="w-full mt-1 bg-red-500 text-white p-2 rounded shadow-md hover:bg-red-600 transition-all duration-200 text-sm"
+            className="w-full bg-red-500 text-white p-2 rounded shadow-md hover:bg-red-600 transition-all duration-200 text-sm"
           >
-            Reset
+            Reset Bookings
           </button>
         </div>
       </div>
