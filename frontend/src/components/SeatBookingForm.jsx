@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 const TrainSeatBooking = () => {
   // Simulate seat data (0 = available, 1 = booked)
   const generateSeats = () => {
@@ -35,9 +35,13 @@ const TrainSeatBooking = () => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("Authorization");
+    localStorage.removeItem("userId");
+    alert("You have been logged out.");
     setIsLoggedIn(false);
     setUsername('');
     setPassword('');
+
   };
 
   const handleBooking = () => {
@@ -92,37 +96,12 @@ const TrainSeatBooking = () => {
   };
 
   if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Train Seat Booking</h1>
-          <div className="mb-4">
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="mb-6">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button
-            onClick={handleLogin}
-            className="w-full bg-blue-600 text-white p-3 rounded font-medium hover:bg-blue-700 transition duration-200"
-          >
-            Login
-          </button>
-        </div>
-      </div>
-    );
+ 
+    const handleLogout = () => {
+   
+      navigate("/login");
+    };
+    handle
   }
 
   return (
