@@ -8,6 +8,7 @@ const SeatBooking = () => {
   const [seatMap, setSeatMap] = useState([]);
   const [numberOfSeats, setNumberOfSeats] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [bookedSeats, setBookedSeats] = useState([]); // Track booked seats
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,19 @@ const SeatBooking = () => {
       );
       toast.success(response.data.message);
       setSeatMap(response.data.fullSeats);
+
+      // Calculate newly booked seats
+      let booked = [];
+      let seatNumber = 1;
+      for (let row of response.data.fullSeats) {
+        for (let seat of row) {
+          if (seat === 1) {
+            booked.push(seatNumber);
+          }
+          seatNumber++;
+        }
+      }
+      setBookedSeats(booked);
     } catch (error) {
       toast.error('Error booking seats: ' + (error.response?.data?.message || error.message));
     }
@@ -61,6 +75,7 @@ const SeatBooking = () => {
       );
   
       toast.success(response.data.message);
+      setBookedSeats([]); // Clear booked seats on reset
       fetchSeatStatus(); // Refresh seat map after reset
     } catch (error) {
       toast.error('Error resetting seats: ' + (error.response?.data?.message || error.message));
@@ -112,10 +127,35 @@ const SeatBooking = () => {
           )}
         </div>
 
-        {/* Booking Form */}
-        <div className="w-1/3 h-full p-4 flex flex-col justify-center items-center bg-white">
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800">Book Your Seats</h2>
-          <div className="w-full mb-6">
+        {/* Booking Info */}
+        <div className="w-1/3 h-full p-4 flex flex-col bg-white">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Booking Information</h2>
+          <div className="space-y-2 mb-6">
+            <p className="text-lg text-gray-700">
+              Available Seats: {seatMap.length ? seatMap.flat().length - seatMap.flat().filter(seat => seat === 1).length : 0}
+            </p>
+            <p className="text-lg text-gray-700">
+              Max Seats Selection: 7
+            </p>
+            <div className="flex flex-col">
+              <p className="text-lg text-gray-700">Your Booked Seats:</p>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {bookedSeats.length > 0 ? (
+                  bookedSeats.map(seat => (
+                    <span
+                      key={seat}
+                      className="inline-flex items-center px-3 py-1 rounded-full bg-orange-500 text-white text-sm"
+                    >
+                      {seat}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">None</p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-full mb-4">
             <input
               type="number"
               min="1"
@@ -123,19 +163,19 @@ const SeatBooking = () => {
               value={numberOfSeats}
               onChange={handleInputChange}
               placeholder="Enter number of seats"
-              className="w-full p-4 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-lg"
+              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-base"
             />
           </div>
           <button
             onClick={handleBooking}
             disabled={numberOfSeats < 1 || numberOfSeats > 7 || loading}
-            className="w-full bg-blue-600 text-white p-4 rounded-lg shadow-md hover:bg-blue-700 disabled:bg-gray-400 transition-all duration-300 transform hover:scale-105 text-lg"
+            className="w-full bg-blue-600 text-white p-3 rounded-lg shadow-md hover:bg-blue-700 disabled:bg-gray-400 transition-all duration-300 text-base"
           >
-            Book Now
+            Book Seats
           </button>
           <button
             onClick={handleReset}
-            className="w-full mt-4 bg-gray-600 text-white p-4 rounded-lg shadow-md hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 text-lg"
+            className="w-full mt-4 bg-red-500 text-white p-3 rounded-lg shadow-md hover:bg-red-600 transition-all duration-300 text-base"
           >
             Reset Booking
           </button>
@@ -158,12 +198,10 @@ const SeatBooking = () => {
 
 const SeatMap = ({ seats }) => {
   let seatNumber = 1;
-  const bookedCount = seats.flat().filter(seat => seat === 1).length;
-  const availableCount = seats.flat().length - bookedCount;
 
   // Calculate seat size based on height to fit all rows (12 rows)
   const seatHeight = `calc((100vh - 64px - 32px) / 12 - 8px)`; // 64px navbar, 32px padding, 12 rows, 8px gap
-  const seatWidth = `calc((100vw * 2 / 3 - 32px - 120px) / 7 - 8px)`; // 2/3 width, 32px padding, 120px sidebar, 7 columns, 8px gap
+  const seatWidth = `calc((100vw * 2 / 3 - 32px) / 7 - 8px)`; // 2/3 width, 32px padding, 7 columns, 8px gap
 
   return (
     <div className="flex flex-row h-full">
@@ -181,14 +219,6 @@ const SeatMap = ({ seats }) => {
             </div>
           ))
         )}
-      </div>
-      <div className="w-[120px] h-full flex flex-col justify-center items-center space-y-6">
-        <span className="inline-flex items-center px-5 py-3 rounded-full bg-yellow-500 text-white shadow-md text-lg">
-          Booked: {bookedCount}
-        </span>
-        <span className="inline-flex items-center px-5 py-3 rounded-full bg-green-500 text-white shadow-md text-lg">
-          Available: {availableCount}
-        </span>
       </div>
     </div>
   );
