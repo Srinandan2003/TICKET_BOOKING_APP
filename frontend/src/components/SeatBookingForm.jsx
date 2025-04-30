@@ -87,21 +87,22 @@ const SeatBooking = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 flex flex-col p-6">
-      {/* Logout Button */}
-      <div className="flex justify-end mb-6">
+    <div className="h-screen w-screen bg-gradient-to-br from-gray-100 to-gray-300 flex flex-col overflow-hidden">
+      {/* Navbar */}
+      <nav className="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
+        <h1 className="text-2xl font-bold">🎟️ Ticket Booking</h1>
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-white px-5 py-2 rounded-full shadow-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
+          className="bg-red-500 text-white px-5 py-2 rounded-full shadow-md hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
         >
           Logout
         </button>
-      </div>
+      </nav>
 
-      <div className="flex flex-col md:flex-row max-w-5xl w-full mx-auto gap-6">
+      {/* Main Content */}
+      <div className="flex flex-row flex-1 max-w-6xl w-full mx-auto gap-4 p-4">
         {/* Seat Map */}
-        <div className="md:w-2/3 w-full p-6 bg-white rounded-xl shadow-xl">
-          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">🎟️ Ticket Booking</h1>
+        <div className="w-2/3 h-[calc(100vh-120px)] p-4 bg-white rounded-xl shadow-xl flex flex-col">
           {loading ? (
             <p className="text-center text-gray-500">Loading seats...</p>
           ) : (
@@ -110,9 +111,9 @@ const SeatBooking = () => {
         </div>
 
         {/* Booking Form */}
-        <div className="md:w-1/3 w-full p-6 flex flex-col justify-center items-center bg-white rounded-xl shadow-xl">
-          <h2 className="text-xl font-semibold mb-6 text-gray-800">Book Your Seats</h2>
-          <div className="w-full max-w-xs mb-6">
+        <div className="w-1/3 h-[calc(100vh-120px)] p-4 flex flex-col justify-center items-center bg-white rounded-xl shadow-xl">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Book Your Seats</h2>
+          <div className="w-full max-w-xs mb-4">
             <input
               type="number"
               min="1"
@@ -148,13 +149,13 @@ const SeatMap = ({ seats }) => {
   const availableCount = seats.flat().length - bookedCount;
 
   return (
-    <div>
-      <div className="grid grid-cols-7 gap-3">
+    <div className="flex flex-col h-full">
+      <div className="grid grid-cols-7 gap-2 flex-1 overflow-auto">
         {seats.map((row, rowIndex) =>
           row.map((seat, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold shadow-md transition-all duration-300 transform hover:scale-110 ${
+              className={`w-14 h-14 rounded-lg flex items-center justify-center text-white font-semibold shadow-md transition-all duration-300 transform hover:scale-110 ${
                 seat === 0 ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600'
               } ${rowIndex === 11 ? 'col-span-2' : ''}`}
             >
@@ -163,7 +164,7 @@ const SeatMap = ({ seats }) => {
           ))
         )}
       </div>
-      <div className="mt-6 flex justify-center space-x-6">
+      <div className="mt-4 flex justify-center space-x-6">
         <span className="inline-flex items-center px-4 py-2 rounded-full bg-yellow-500 text-white shadow-md">
           Booked: {bookedCount}
         </span>
