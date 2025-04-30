@@ -64,7 +64,6 @@ const SeatBooking = () => {
       alert('Error resetting seats: ' + (error.response?.data?.message || error.message));
     }
   };
-  
 
   const handleLogout = () => {
     localStorage.removeItem("Authorization");
@@ -86,35 +85,34 @@ const SeatBooking = () => {
       setNumberOfSeats(clamped);
     }
   };
-  
 
   return (
-    <div className="min-h-screen bg-gray-200 flex flex-col p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-300 flex flex-col p-6">
       {/* Logout Button */}
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-6">
         <button
           onClick={handleLogout}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          className="bg-red-500 text-white px-5 py-2 rounded-full shadow-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
         >
           Logout
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row max-w-4xl w-full mx-auto">
+      <div className="flex flex-col md:flex-row max-w-5xl w-full mx-auto gap-6">
         {/* Seat Map */}
-        <div className="md:w-2/3 w-full p-4">
-          <h1 className="text-2xl font-bold mb-4 text-center">Ticket Booking</h1>
+        <div className="md:w-2/3 w-full p-6 bg-white rounded-xl shadow-xl">
+          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">🎟️ Ticket Booking</h1>
           {loading ? (
-            <p className="text-center">Loading seats...</p>
+            <p className="text-center text-gray-500">Loading seats...</p>
           ) : (
             <SeatMap seats={seatMap} />
           )}
         </div>
 
         {/* Booking Form */}
-        <div className="md:w-1/3 w-full p-4 flex flex-col justify-center items-center">
-          <h2 className="text-lg font-semibold mb-4">Book Seats</h2>
-          <div className="w-full max-w-xs mb-4">
+        <div className="md:w-1/3 w-full p-6 flex flex-col justify-center items-center bg-white rounded-xl shadow-xl">
+          <h2 className="text-xl font-semibold mb-6 text-gray-800">Book Your Seats</h2>
+          <div className="w-full max-w-xs mb-6">
             <input
               type="number"
               min="1"
@@ -122,17 +120,22 @@ const SeatBooking = () => {
               value={numberOfSeats}
               onChange={handleInputChange}
               placeholder="Enter number of seats"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
             />
           </div>
           <button
             onClick={handleBooking}
             disabled={numberOfSeats < 1 || numberOfSeats > 7 || loading}
-            className="w-full max-w-xs bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
+            className="w-full max-w-xs bg-blue-600 text-white p-3 rounded-lg shadow-md hover:bg-blue-700 disabled:bg-gray-400 transition-all duration-300 transform hover:scale-105"
           >
-            Book
+            Book Now
           </button>
-          <button onClick={handleReset}   className="w-full max-w-xs bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:bg-gray-400">Reset</button>
+          <button
+            onClick={handleReset}
+            className="w-full max-w-xs mt-4 bg-gray-600 text-white p-3 rounded-lg shadow-md hover:bg-gray-700 transition-all duration-300 transform hover:scale-105"
+          >
+            Reset Booking
+          </button>
         </div>
       </div>
     </div>
@@ -146,13 +149,13 @@ const SeatMap = ({ seats }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-3">
         {seats.map((row, rowIndex) =>
           row.map((seat, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`w-10 h-10 rounded flex items-center justify-center text-white font-semibold ${
-                seat === 0 ? 'bg-green-500' : 'bg-yellow-500'
+              className={`w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold shadow-md transition-all duration-300 transform hover:scale-110 ${
+                seat === 0 ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600'
               } ${rowIndex === 11 ? 'col-span-2' : ''}`}
             >
               {seatNumber++}
@@ -160,11 +163,11 @@ const SeatMap = ({ seats }) => {
           ))
         )}
       </div>
-      <div className="mt-4 flex justify-center space-x-4">
-        <span className="inline-flex items-center px-3 py-1 rounded bg-yellow-500 text-white">
+      <div className="mt-6 flex justify-center space-x-6">
+        <span className="inline-flex items-center px-4 py-2 rounded-full bg-yellow-500 text-white shadow-md">
           Booked: {bookedCount}
         </span>
-        <span className="inline-flex items-center px-3 py-1 rounded bg-green-500 text-white">
+        <span className="inline-flex items-center px-4 py-2 rounded-full bg-green-500 text-white shadow-md">
           Available: {availableCount}
         </span>
       </div>
