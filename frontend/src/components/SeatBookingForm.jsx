@@ -44,23 +44,27 @@ const SeatBooking = () => {
     }
   };
 
-  const handleReset = async() =>{
+  const handleReset = async () => {
     try {
       const token = localStorage.getItem("Authorization");
-      const response = await axiosInstance.post('/api/seat/reset-bookings', 
-      
-        { headers: {
+      const response = await axiosInstance.post(
+        '/api/seat/reset-bookings',
+        {}, // empty body
+        {
+          headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
         }
       );
-
+  
       alert(response.data.message);
+      fetchSeatStatus(); // Refresh seat map after reset
     } catch (error) {
       alert('Error resetting seats: ' + (error.response?.data?.message || error.message));
     }
-  }
+  };
+  
 
   const handleLogout = () => {
     localStorage.removeItem("Authorization");
