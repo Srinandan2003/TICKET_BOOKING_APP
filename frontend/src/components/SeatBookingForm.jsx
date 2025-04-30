@@ -52,8 +52,19 @@ const SeatBooking = () => {
   };
 
   const handleInputChange = (e) => {
-    setNumberOfSeats(Math.max(1, Math.min(7, parseInt(e.target.value) || 1)));
+    const value = e.target.value;
+    if (value === "") {
+      setNumberOfSeats("");
+      return;
+    }
+    
+    const num = parseInt(value);
+    if (!isNaN(num)) {
+      const clamped = Math.min(7, Math.max(1, num));
+      setNumberOfSeats(clamped);
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col p-6">
