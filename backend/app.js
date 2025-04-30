@@ -10,7 +10,11 @@ const app = express();
 
 
 app.use(express.json());
-app.use(cors({origin:"ticket-booking-app-one.vercel.app"}))
+app.use(cors({
+    origin: ["http://localhost:5173", "https://ticket-booking-app-one.vercel.app"],
+    
+  }));
+
 
 
 app.use('api/auth',UserRoute)
