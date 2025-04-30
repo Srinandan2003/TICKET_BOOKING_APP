@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import Login from "./pages/LogInPage.jsx";
 import SeatBookingForm from "./components/SeatBookingForm.jsx";
-import SeatGrid from "./components/SeatBooking.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
 function App() {
