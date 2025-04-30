@@ -17,6 +17,6 @@ app.use(cors({
 
 
 
-app.use('api/auth',UserRoute)
-app.use('api/seat',SeatRouter)
+app.use('/api/auth',UserRoute)
+app.use('/api/seat',SeatRouter)
 export default app
