@@ -13,6 +13,6 @@ app.use(express.json());
 app.use(cors({origin:"ticket-booking-app-one.vercel.app"}))
 
 
-app.use('/api/auth',UserRoute)
-app.use('/api/seat',SeatRouter)
+app.use('api/auth',UserRoute)
+app.use('api/seat',SeatRouter)
 export default app
