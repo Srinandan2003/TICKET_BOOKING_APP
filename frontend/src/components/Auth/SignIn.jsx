@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../../services/authSevices.js";
 
-
-// Inside your Login component
-const navigate = useNavigate();
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -95,14 +92,11 @@ function Login() {
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-500">
-  Not a member yet?{" "}
-  <button
-    onClick={() => navigate("/register")} // Use navigate instead of anchor tag
-    className="font-semibold text-indigo-600 hover:text-indigo-500"
-  >
-    Create an account
-  </button>
-</p>
+            Not a member yet?{" "}
+            <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
+  Create an account
+</Link>
+          </p>
         </div>
       </div>
     </div>
