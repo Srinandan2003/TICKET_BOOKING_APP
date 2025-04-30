@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { registerUser } from "../../services/authSevices.js";
+import { Link, useNavigate } from "react-router-dom"; // ✅ added Link and useNavigate
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -8,17 +9,20 @@ function Register() {
     password: ""
   });
 
+  const navigate = useNavigate(); // ✅ for redirect after registration
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // ✅ fix: prevent form reload
     try {
       const response = await registerUser(formData);
       console.log(response);
       alert(response.data.message);
       setFormData({ name: "", email: "", password: "" });
+      navigate("/login"); // ✅ redirect to login after successful register
     } catch (error) {
       alert(error.response?.data?.message || "Something went wrong");
     }
@@ -34,7 +38,7 @@ function Register() {
         </div>
 
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6"> {/* ✅ wrap in form */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
                 Full Name
@@ -91,19 +95,19 @@ function Register() {
 
             <div>
               <button
-                onClick={handleSubmit}
+                type="submit" // ✅ ensure it submits the form
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600"
               >
                 Sign up
               </button>
             </div>
-          </div>
+          </form>
 
           <p className="mt-6 text-center text-sm text-gray-500">
             Already have an account?{" "}
-            <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+            <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500">
               Sign in
-            </a>
+            </Link>
           </p>
         </div>
       </div>
