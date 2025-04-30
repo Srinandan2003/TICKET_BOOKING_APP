@@ -4,7 +4,7 @@ const RegisterPage = () =>{
     return(
         <>
         <div>
-            <h1>CREATE AN ACCOUNT</h1>
+         
             <Register/>
         </div>
         </>
