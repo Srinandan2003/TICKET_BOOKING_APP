@@ -12,19 +12,11 @@ export const bookSeat = async (req, res) => {
   
       let seatDoc = await Seat.findOne();
       if (!seatDoc) seatDoc = await Seat.create({});
-  
-      const userBookedCount = seatDoc.bookings.filter(b => b?.userId?.toString() === userId).length;
-  
-      if (userBookedCount + count > 7) {
-        return res.status(400).json({
-          message: `Booking failed. You already booked ${userBookedCount} seats. You can only book ${7 - userBookedCount} more.`
-        });
-      }
-  
+
       const seats = seatDoc.seats;
       let bookedSeats = [];
   
-      // Try continuous seats first
+      // continuous seats
       for (let i = 0; i < seats.length; i++) {
         for (let j = 0; j <= 7 - count; j++) {
           if (seats[i].slice(j, j + count).every(seat => seat === 0)) {
@@ -43,7 +35,7 @@ export const bookSeat = async (req, res) => {
         }
       }
   
-      // Try scattered seats
+      //  scattered seats
       for (let i = 0; i < seats.length && bookedSeats.length < count; i++) {
         for (let j = 0; j < seats[i].length && bookedSeats.length < count; j++) {
           if (seats[i][j] === 0) {
