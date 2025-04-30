@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5001', // Update if deployed
+  baseURL: 'https://ticket-booking-app-pfq1.onrender.com', // Update if deployed
 });
 
 API.interceptors.request.use((config) => {
