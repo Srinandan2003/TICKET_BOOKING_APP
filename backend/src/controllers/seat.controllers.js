@@ -113,3 +113,27 @@ return res.json({
       res.status(500).send('Internal Server Error');
     }
   }
+
+  export const resetBookings = async (req, res) => {
+    try {
+      let seatDoc = await Seat.findOne();
+  
+      if (!seatDoc) {
+        seatDoc = await Seat.create({});
+      }
+  
+      // Reset all seats to 0 (available)
+      seatDoc.seats = Array(80).fill().map(() => Array(7).fill(0));
+  
+      // Clear all bookings
+      seatDoc.bookings = [];
+  
+      await seatDoc.save();
+  
+      res.json({ message: "All bookings have been reset.", fullSeats: seatDoc.seats });
+    } catch (error) {
+      console.error("Reset error:", error.message);
+      res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  };
+  

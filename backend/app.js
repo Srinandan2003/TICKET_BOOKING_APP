@@ -19,4 +19,10 @@ app.use(cors({
 
 app.use('/api/auth',UserRoute)
 app.use('/api/seat',SeatRouter)
+app.post("/bookings/reset", async (req, res) => {
+  const { userId } = req.body;
+  await BookingModel.deleteMany({ userId });
+  res.status(200).send({ msg: "Bookings reset." });
+});
+
 export default app
