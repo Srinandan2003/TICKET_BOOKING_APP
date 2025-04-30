@@ -25,7 +25,7 @@ A full-stack ticket booking application where users can register, log in, and bo
 
 ## 🔗 Live Links
 
-- 🌐 **Frontend**: [ticket-booking-app-one.vercel.app](https://ticket-booking-app-one.vercel.app/login)  
+- 🌐 **Frontend**: [ticket-booking-app-one.vercel.app](https://ticket-booking-app-one.vercel.app/)  
 - ⚙️ **Backend API**: [ticket-booking-app-pfq1.onrender.com](https://ticket-booking-app-pfq1.onrender.com)
 
 ---
