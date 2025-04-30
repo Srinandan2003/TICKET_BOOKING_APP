@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/authSevices.js";
-import { useNavigate } from "react-router-dom";
+
 
 // Inside your Login component
 const navigate = useNavigate();
