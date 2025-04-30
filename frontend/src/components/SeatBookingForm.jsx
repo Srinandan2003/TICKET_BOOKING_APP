@@ -161,12 +161,12 @@ const SeatMap = ({ seats }) => {
   const bookedCount = seats.flat().filter(seat => seat === 1).length;
   const availableCount = seats.flat().length - bookedCount;
 
-  // Calculate seat size based on height to fit all rows (12 rows + status bar space)
-  const seatHeight = `calc((100vh - 64px - 32px - 60px) / 12 - 8px)`; // 64px navbar, 32px padding, 60px status bar, 12 rows, 8px gap
-  const seatWidth = `calc((100vw * 2 / 3 - 32px) / 7 - 8px)`; // 2/3 width, 32px padding, 7 columns, 8px gap
+  // Calculate seat size based on height to fit all rows (12 rows)
+  const seatHeight = `calc((100vh - 64px - 32px) / 12 - 8px)`; // 64px navbar, 32px padding, 12 rows, 8px gap
+  const seatWidth = `calc((100vw * 2 / 3 - 32px - 120px) / 7 - 8px)`; // 2/3 width, 32px padding, 120px sidebar, 7 columns, 8px gap
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-row h-full">
       <div className="grid grid-cols-7 gap-2 flex-1">
         {seats.map((row, rowIndex) =>
           row.map((seat, colIndex) => (
@@ -182,7 +182,7 @@ const SeatMap = ({ seats }) => {
           ))
         )}
       </div>
-      <div className="mt-4 flex justify-center space-x-6 h-[60px] items-center">
+      <div className="w-[120px] h-full flex flex-col justify-center items-center space-y-6">
         <span className="inline-flex items-center px-5 py-3 rounded-full bg-yellow-500 text-white shadow-md text-lg">
           Booked: {bookedCount}
         </span>
