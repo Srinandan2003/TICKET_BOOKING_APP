@@ -1,49 +1,58 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/authSevices.js";
-import { Link, useNavigate } from "react-router-dom"; // ✅ added Link and useNavigate
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: ""
+    password: "",
   });
-
-  const navigate = useNavigate(); // ✅ for redirect after registration
+  const [error, setError] = useState(""); // Added error state for better UX
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError(""); // Clear error when user edits
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // ✅ fix: prevent form reload
+    e.preventDefault();
     try {
       const response = await registerUser(formData);
-      console.log(response);
-      alert(response.data.message);
+      toast.success(response.data.message || "Registration successful!");
       setFormData({ name: "", email: "", password: "" });
-      navigate("/login"); // ✅ redirect to login after successful register
+      navigate("/login");
     } catch (error) {
-      alert(error.response?.data?.message || "Something went wrong");
+      const errorMessage = error.response?.data?.message || "Something went wrong";
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error("Register error:", error);
     }
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center items-center px-6 py-12 lg:px-8 bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="flex min-h-screen flex-col justify-center items-center px-4 py-8 bg-gradient-to-r from-gray-100 to-gray-200">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md transform transition-all duration-300 hover:shadow-xl">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Create your account
+          <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 mb-6">
+            Sign up
           </h2>
         </div>
 
-        <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={handleSubmit} className="space-y-6"> {/* ✅ wrap in form */}
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <p className="text-red-500 text-sm text-center bg-red-100 p-2 rounded">{error}</p>
+            )}
+
             <div>
-              <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+              <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-700">
                 Full Name
               </label>
-              <div className="mt-2">
+              <div className="mt-1">
                 <input
                   id="name"
                   name="name"
@@ -52,16 +61,16 @@ function Register() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                  className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-700">
                 Email address
               </label>
-              <div className="mt-2">
+              <div className="mt-1">
                 <input
                   id="email"
                   name="email"
@@ -70,16 +79,16 @@ function Register() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                  className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-700">
                 Password
               </label>
-              <div className="mt-2">
+              <div className="mt-1">
                 <input
                   id="password"
                   name="password"
@@ -88,29 +97,30 @@ function Register() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                  className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm"
                 />
               </div>
             </div>
 
             <div>
               <button
-                type="submit" // ✅ ensure it submits the form
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-200"
               >
                 Sign up
               </button>
             </div>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="mt-4 text-center text-sm text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500">
+            <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-500">
               Sign in
             </Link>
           </p>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </div>
   );
 }
