@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SeatBooking = () => {
   const [seatMap, setSeatMap] = useState([]);
@@ -21,7 +23,7 @@ const SeatBooking = () => {
       setSeatMap(response.data);
       setLoading(false);
     } catch (error) {
-      alert('Error fetching seats: ' + (error.response?.data?.message || error.message));
+      toast.error('Error fetching seats: ' + (error.response?.data?.message || error.message));
       setLoading(false);
     }
   };
@@ -37,10 +39,10 @@ const SeatBooking = () => {
           }
         }
       );
-      alert(response.data.message);
+      toast.success(response.data.message);
       setSeatMap(response.data.fullSeats);
     } catch (error) {
-      alert('Error booking seats: ' + (error.response?.data?.message || error.message));
+      toast.error('Error booking seats: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -58,17 +60,17 @@ const SeatBooking = () => {
         }
       );
   
-      alert(response.data.message);
+      toast.success(response.data.message);
       fetchSeatStatus(); // Refresh seat map after reset
     } catch (error) {
-      alert('Error resetting seats: ' + (error.response?.data?.message || error.message));
+      toast.error('Error resetting seats: ' + (error.response?.data?.message || error.message));
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("Authorization");
     localStorage.removeItem("userId");
-    alert("You have been logged out.");
+    toast.success("You have been logged out.");
     navigate("/login");
   };
 
@@ -139,6 +141,17 @@ const SeatBooking = () => {
           </button>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
