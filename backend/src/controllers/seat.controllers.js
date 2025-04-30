@@ -35,25 +35,51 @@ export const bookSeat = async (req, res) => {
         }
       }
   
-      //  scattered seats
-      for (let i = 0; i < seats.length && bookedSeats.length < count; i++) {
-        for (let j = 0; j < seats[i].length && bookedSeats.length < count; j++) {
-          if (seats[i][j] === 0) {
-            seats[i][j] = 1;
-            bookedSeats.push({ userId, row: i, col: j });
-          }
-        }
-      }
-  
-      if (bookedSeats.length === count) {
-        seatDoc.bookings.push(...bookedSeats);
-        await seatDoc.save();
-        return res.json({
-          message: `No continuous block found. Booked ${count} nearest available seats.`,
-          bookedSeats,
-          fullSeats: seats
-        });
-      }
+     // scattered - find the closest available 'count' seats
+let flatSeats = [];
+const cols = seats[0].length;
+
+for (let i = 0; i < seats.length; i++) {
+  for (let j = 0; j < seats[i].length; j++) {
+    if (seats[i][j] === 0) {
+      flatSeats.push({ row: i, col: j, index: i * cols + j });
+    }
+  }
+}
+
+if (flatSeats.length < count) {
+  return res.status(400).json({ message: "Not enough seats available to fulfill this request." });
+}
+
+// Sliding window to find closest `count` seats
+let minSpread = Infinity;
+let bestWindow = [];
+
+for (let i = 0; i <= flatSeats.length - count; i++) {
+  const window = flatSeats.slice(i, i + count);
+  const spread = window[count - 1].index - window[0].index;
+  if (spread < minSpread) {
+    minSpread = spread;
+    bestWindow = window;
+  }
+}
+
+// Book selected seats
+for (const seat of bestWindow) {
+  seats[seat.row][seat.col] = 1;
+  bookedSeats.push({ userId, row: seat.row, col: seat.col });
+}
+
+seatDoc.bookings.push(...bookedSeats);
+await seatDoc.save();
+
+return res.json({
+  message: `No continuous block found. Booked ${count} closest scattered seats.`,
+  bookedSeats,
+  fullSeats: seats
+});
+
+    
   
       res.status(400).json({ message: "Not enough seats available to fulfill this request." });
     } catch (error) {
