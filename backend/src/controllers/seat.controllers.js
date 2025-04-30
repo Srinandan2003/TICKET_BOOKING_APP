@@ -122,10 +122,23 @@ return res.json({
         seatDoc = await Seat.create({});
       }
   
-      // Reset all seats to 0 (available)
-      seatDoc.seats = Array(80).fill().map(() => Array(7).fill(0));
+      // Build the correct seat layout: 11 rows of 7, 1 row of 3
+      const totalSeats = 80;
+      const seatsPerRow = 7;
+      const fullRows = Math.floor(totalSeats / seatsPerRow); // 11
+      const remainder = totalSeats % seatsPerRow; // 3
   
-      // Clear all bookings
+      const layout = [];
+  
+      for (let i = 0; i < fullRows; i++) {
+        layout.push(Array(seatsPerRow).fill(0));
+      }
+  
+      if (remainder > 0) {
+        layout.push(Array(remainder).fill(0)); // last row with 3 seats
+      }
+  
+      seatDoc.seats = layout;
       seatDoc.bookings = [];
   
       await seatDoc.save();
