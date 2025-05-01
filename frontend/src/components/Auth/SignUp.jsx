@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/authSevices.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Loader2 } from "lucide-react";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -10,7 +11,8 @@ function Register() {
     email: "",
     password: "",
   });
-  const [error, setError] = useState(""); // Added error state for better UX
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,6 +22,8 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
       const response = await registerUser(formData);
       toast.success(response.data.message || "Registration successful!");
@@ -30,6 +34,8 @@ function Register() {
       setError(errorMessage);
       toast.error(errorMessage);
       console.error("Register error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -105,9 +111,19 @@ function Register() {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-200"
+                disabled={isLoading}
+                className={`flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-200 cursor-pointer ${
+                  isLoading ? "opacity-75" : ""
+                }`}
               >
-                Sign up
+                {isLoading ? (
+                  <span className="flex items-center">
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Signing up...
+                  </span>
+                ) : (
+                  "Sign up"
+                )}
               </button>
             </div>
           </form>
